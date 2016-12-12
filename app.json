@@ -1,6 +1,6 @@
 {
-	"name": "how-to-stream-torrents-in-nodejs",
-	"description": "🍿 How to Stream Torrent Movies using NodeJS and the HTML5 Video tag",
+	"name": "stream-torrents-in-nodejs",
+	"description": "How to Stream Torrent Movies using NodeJS and the HTML5 Video tag",
 	"repository": "https://github.com/davidgatti/How-to-Stream-Torrents-in-NodeJS",
 	"success_url": "/",
 	"env": {
