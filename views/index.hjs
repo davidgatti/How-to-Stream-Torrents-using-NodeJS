@@ -5,6 +5,7 @@
 		<meta http-equiv="X-UA-Compatible" content="IE=edge">
 		<meta name="viewport" content="width=device-width, initial-scale=1">
 		<meta name="description" content="">
+
 		<title>Movie Time</title>
 
 		<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
@@ -16,6 +17,8 @@
 			<video src="" height="360px" controls ></video>
 		</center>
 
+		<input type="text" name="magnet" placeholder="Enter torrent URL. ">
+
 		<p id="stream">Stream</p>
 		<p id="stop">Stop</p>
 	</body>
@@ -25,11 +28,24 @@
 
 		var api = "{{base_url}}/video/";
 
+		$("video").on("error", function() {
+
+		     var magnet = $('input').val();
+
+			$.get(api + 'delete/' + magnet, function(data) {
+
+				$('input').val('');
+
+			});
+		});
+
 		$('#stream').click(function() {
 
-			$.get(api + 'add/torrent', function(data) {
+			var magnet = $('input').val();
 
-				var video = api + 'stream/torrent';
+			$.get(api + 'add/' + magnet, function(data) {
+
+				var video = api + 'stream/' + magnet;
 
 				$('video').attr('src', video);
 
@@ -38,11 +54,10 @@
 
 		$('#stop').click(function() {
 
-			$.get(api + 'delete/torrent', function(data) {
+			$('video').attr('src', '');
+			$('video')[0].load();
 
-				$('video').attr('src', '');
 
-			});
 		});
 
 	});

@@ -5,7 +5,7 @@ var WebTorrent = require('webtorrent')
 
 let router = express.Router();
 
-var client = new WebTorrent()
+var client;
 
 //
 //	Test torrents
@@ -14,17 +14,24 @@ var tor_intel = 'magnet:?xt=urn:btih:6a9759bffd5c0af65319979fb7832189f4f3c35d&dn
 var tor_depth = 'magnet:?xt=urn:btih:6fd85ac1a2193167810da8c60e92604aedd70fe5&dn=_______+%28Depth%29+Short+Film'
 var tor_snowden = "magnet:?xt=urn:btih:f76ad565160789101bf986ba582d29584d9fee67&dn=Snowden"
 
-var torrent = tor_snowden;
+//var torrent = tor_snowden;
 
 //
 //	Add the torrent and start downloading it.
 //
-router.get('/add/:torrent', function(req, res) {
+router.get('/add/:magnet', function(req, res) {
+
+	client = new WebTorrent();
+
+	let magnet = "magnet:?xt=urn:btih:" + req.params.magnet;
+
+
+	console.log(magnet)
 
 	//
 	//	Add torrent to the queue
 	//
-	client.add(torrent, function (torrent) {
+	client.add(magnet, function (torrent) {
 
 		//
 		//	Extract the biggest file from the basket
@@ -57,8 +64,8 @@ router.get('/add/:torrent', function(req, res) {
 		//
 		torrent.on('download', function(bytes) {
 
-			var percent 		= Math.round(torrent.progress * 100 * 100) / 100;
-			var date 			= new Date(torrent.timeRemaining);
+			let percent 		= Math.round(torrent.progress * 100 * 100) / 100;
+			let date 			= new Date(torrent.timeRemaining);
 			let remaining 		= date.toLocaleTimeString()
 			let downloadSpeed 	= torrent.downloadSpeed / 1024;
 			let received 		= torrent.received / 1024
@@ -80,14 +87,17 @@ router.get('/add/:torrent', function(req, res) {
 //
 //	Stream the video
 //
-router.get('/stream/:torrent', function(req, res, next) {
+router.get('/stream/:magnet', function(req, res, next) {
 
+	let magnet = "magnet:?xt=urn:btih:" + req.params.magnet;
+
+console.log(magnet)
 	//
 	//	Returns the torrent with the given torrentId. Convenience method.
 	//	Easier than searching through the client.torrents array. Returns null
 	//	if no matching torrent found.
 	//
-	var tor = client.get(torrent);
+	var tor = client.get(magnet);
 
 	//
 	//	Extract the biggest file from the basket
@@ -199,17 +209,25 @@ router.get('/stream/:torrent', function(req, res, next) {
 //
 //	Delete torrent
 //
-router.get('/delete/:torrent', function(req, res, next) {
+router.get('/delete/:magnet', function(req, res, next) {
+
+	let magnet = "magnet:?xt=urn:btih:" + req.params.magnet;
 
 	//
 	//	Remove a torrent from the client. Destroy all connections to peers
 	//	and delete all saved file data. If callback is specified, it will be
 	//	called when file data is removed.
 	//
-	var tor = client.remove(torrent);
+	client.remove(magnet, function() {
 
-	res.status(200);
-	res.end();
+		client.destroy(function() {
+
+			res.status(200);
+			res.end();
+
+		});
+
+	});
 
 });
 
