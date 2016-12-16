@@ -1,20 +1,11 @@
 let fs = require("fs")
 let path = require("path");
 let express = require('express');
-var WebTorrent = require('webtorrent')
+let WebTorrent = require('webtorrent')
 
 let router = express.Router();
 
-var client;
-
-//
-//	Test torrents
-//
-var tor_intel = 'magnet:?xt=urn:btih:6a9759bffd5c0af65319979fb7832189f4f3c35d&dn=sintel.mp4&tr=wss%3A%2F%2Ftracker.btorrent.xyz&tr=wss%3A%2F%2Ftracker.fastcast.nz&tr=wss%3A%2F%2Ftracker.openwebtorrent.com&ws=https%3A%2F%2Fwebtorrent.io%2Ftorrents%2Fsintel-1024-surround.mp4'
-var tor_depth = 'magnet:?xt=urn:btih:6fd85ac1a2193167810da8c60e92604aedd70fe5&dn=_______+%28Depth%29+Short+Film'
-var tor_snowden = "magnet:?xt=urn:btih:f76ad565160789101bf986ba582d29584d9fee67&dn=Snowden"
-
-//var torrent = tor_snowden;
+let client;
 
 //
 //	Add the torrent and start downloading it.
@@ -25,18 +16,27 @@ router.get('/add/:magnet', function(req, res) {
 
 	let magnet = "magnet:?xt=urn:btih:" + req.params.magnet;
 
-
-	console.log(magnet)
-
 	//
 	//	Add torrent to the queue
 	//
 	client.add(magnet, function (torrent) {
 
 		//
-		//	Extract the biggest file from the basket
+		//	Content of the Magnet URL
 		//
-		let file = getLargestFile(torrent);
+		let files = [];
+
+		//
+		//	Extract all the files form the Magnet URL
+		//
+		torrent.files.forEach(function(data) {
+
+			files.push({
+				name: data.name,
+				length: data.length
+			});
+
+		});
 
 		//
 		//	Emitted whenever data is uploaded. Useful for reporting the current
@@ -78,7 +78,7 @@ router.get('/add/:magnet', function(req, res) {
 		//	->	Just say it is ok.
 		//
 		res.status(200)
-		res.end();
+		res.json(files);
 
 	});
 
@@ -87,11 +87,10 @@ router.get('/add/:magnet', function(req, res) {
 //
 //	Stream the video
 //
-router.get('/stream/:magnet', function(req, res, next) {
+router.get('/stream/:magnet/:file_name', function(req, res, next) {
 
 	let magnet = "magnet:?xt=urn:btih:" + req.params.magnet;
 
-console.log(magnet)
 	//
 	//	Returns the torrent with the given torrentId. Convenience method.
 	//	Easier than searching through the client.torrents array. Returns null
@@ -102,7 +101,7 @@ console.log(magnet)
 	//
 	//	Extract the biggest file from the basket
 	//
-	var file = getLargestFile(tor);
+	var file = getLargestFile(tor, req.params.file_name);
 
 	//
 	//	2.	Save the range the browser is asking for in a clear and
@@ -234,13 +233,13 @@ router.get('/delete/:magnet', function(req, res, next) {
 //
 //
 //
-function getLargestFile(torrent) {
+function getLargestFile(torrent, file_name) {
 
 	let file;
 
 	for(i = 0; i < torrent.files.length; i++)
 	{
-		if (!file || file.length < torrent.files[i].length)
+		if(torrent.files[i].name == file_name)
 		{
 			file = torrent.files[i];
 		}

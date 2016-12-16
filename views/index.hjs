@@ -13,14 +13,29 @@
 	</head>
 
 	<body>
-		<center>
-			<video src="" height="360px" controls ></video>
-		</center>
+		<video src="" height="360px" controls ></video>
 
-		<input type="text" name="magnet" placeholder="Enter torrent URL. ">
+		<p>Small and example torrents</p>
 
-		<p id="stream">Stream</p>
-		<p id="stop">Stop</p>
+		<ul>
+			<li class="magnet" data-id="6a9759bffd5c0af65319979fb7832189f4f3c35d">Demo real</li>
+			<li class="magnet" data-id="6fd85ac1a2193167810da8c60e92604aedd70fe5">Dept</li>
+			<li class="magnet" data-id="f76ad565160789101bf986ba582d29584d9fee67">Snowden trailer</li>
+		</ul>
+
+		<p>Magnet Hash <input type="text" name="magnet" placeholder="Enter torrent URL."></p>
+
+		<p>Content</p>
+
+		<ul id="content"></ul>
+
+		<p>Controls</p>
+
+		<ul>
+			<li id="load">Load</li>
+			<li id="stop">Stop</li>
+		</ul>
+
 	</body>
 
 	<script>
@@ -28,39 +43,91 @@
 
 		var api = "{{base_url}}/video/";
 
+		//
+		//
+		//
 		$("video").on("error", function() {
 
-		     var magnet = $('input').val();
+			if($('video').attr('src'))
+			{
+				var magnet = $('input').val();
 
-			$.get(api + 'delete/' + magnet, function(data) {
+				$.get(api + 'delete/' + magnet, function(data) {
 
-				$('input').val('');
+					$('input').val('');
 
-			});
+				});
+			}
+
 		});
 
-		$('#stream').click(function() {
+		//
+		//
+		//
+		$('.magnet').click(function() {
+
+			var magnet = $(this).attr("data-id");
+
+			$("input").removeAttr('placeholder');
+			$("input").val(magnet)
+
+		});
+
+		//
+		//
+		//
+		$('#content').on('click', '.file', function() {
+
+			var magnet = $('input').val();
+			var file_name = $(this).attr("data-name");
+
+			$('video').attr('src', api + 'stream/' + magnet + "/" + file_name);
+
+		});
+
+		//
+		//
+		//
+		$('#load').click(function() {
 
 			var magnet = $('input').val();
 
 			$.get(api + 'add/' + magnet, function(data) {
 
-				var video = api + 'stream/' + magnet;
+				console.log(data)
 
-				$('video').attr('src', video);
+				$("#content").empty();
+
+				$.each(data, function(index, obj) {
+
+					$("#content").append('<li class="file" data-name="' + obj.name + '">"' + obj.name + '" ("' + formatBytes(obj.length) + '") </li>');
+
+				})
 
 			});
+
 		});
 
+		//
+		//
+		//
 		$('#stop').click(function() {
 
 			$('video').attr('src', '');
 			$('video')[0].load();
 
-
 		});
 
 	});
+
+	function formatBytes(bytes,decimals) {
+	   if(bytes == 0) return '0 Byte';
+	   var k = 1000; // or 1024 for binary
+	   var dm = decimals + 1 || 3;
+	   var sizes = ['Bytes', 'KB', 'MB', 'GB', 'TB', 'PB', 'EB', 'ZB', 'YB'];
+	   var i = Math.floor(Math.log(bytes) / Math.log(k));
+	   return parseFloat((bytes / Math.pow(k, i)).toFixed(dm)) + ' ' + sizes[i];
+	}
 	</script>
 
 </html>
