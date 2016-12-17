@@ -10,6 +10,15 @@
 
 		<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
 
+		<style type="text/css">
+
+			.url:hover {
+    			text-decoration: underline;
+    			cursor: pointer;
+			}
+
+		</style>
+
 	</head>
 
 	<body>
@@ -19,10 +28,10 @@
 		<p>Small and example torrents</p>
 
 		<ul>
-			<li class="magnet" data-id="6a9759bffd5c0af65319979fb7832189f4f3c35d">Demo real</li>
-			<li class="magnet" data-id="6fd85ac1a2193167810da8c60e92604aedd70fe5">Dept</li>
-			<li class="magnet" data-id="f76ad565160789101bf986ba582d29584d9fee67">Snowden trailer</li>
-			<li class="magnet" data-id="6a02592d2bbc069628cd5ed8a54f88ee06ac0ba5">Cosmos Laundromat: First Cycle</li>
+			<li class="magnet url" data-id="6a9759bffd5c0af65319979fb7832189f4f3c35d">Demo real</li>
+			<li class="magnet url" data-id="6fd85ac1a2193167810da8c60e92604aedd70fe5">Dept</li>
+			<li class="magnet url" data-id="f76ad565160789101bf986ba582d29584d9fee67">Snowden trailer</li>
+			<li class="magnet url" data-id="6a02592d2bbc069628cd5ed8a54f88ee06ac0ba5">Cosmos Laundromat: First Cycle</li>
 		</ul>
 
 		<p>Magnet Hash <input type="text" name="magnet" placeholder="Enter torrent URL."> <button id="load">Load</button></p>
@@ -220,7 +229,7 @@
 				//
 				$.each(data, function(index, obj) {
 
-					$("#content").append('<li class="file" data-name="' + obj.name + '">'+ obj.name + ' (' + formatBytes(obj.length, 0) + ') </li>');
+					$("#content").append('<li class="file url" data-name="' + obj.name + '">'+ obj.name + ' (' + formatBytes(obj.length, 0) + ') </li>');
 				})
 
 				$('#load').prop('disabled', false);
@@ -260,7 +269,7 @@
 						//
 						$.each(data, function(index, obj) {
 
-							$("#magnets").append('<li class="magnet" data-hash="' + obj.hash + '">' + obj.hash + '</li>');
+							$("#magnets").append('<li class="magnet url" data-hash="' + obj.hash + '">' + obj.hash + '</li>');
 
 						});
 					}
