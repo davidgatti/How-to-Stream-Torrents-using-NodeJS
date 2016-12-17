@@ -13,7 +13,8 @@
 	</head>
 
 	<body>
-		<video src="" height="360px" controls ></video>
+
+		<video autoplay src="" height="360px" controls ></video>
 
 		<p>Small and example torrents</p>
 
@@ -24,18 +25,11 @@
 			<li class="magnet" data-id="6a02592d2bbc069628cd5ed8a54f88ee06ac0ba5">Cosmos Laundromat: First Cycle</li>
 		</ul>
 
-		<p>Magnet Hash <input type="text" name="magnet" placeholder="Enter torrent URL."></p>
+		<p>Magnet Hash <input type="text" name="magnet" placeholder="Enter torrent URL."> <button id="load">Load</button></p>
 
 		<p>Content</p>
 
 		<ul id="content"></ul>
-
-		<p>Controls</p>
-
-		<ul>
-			<li id="load">Load</li>
-			<li id="stop">Stop</li>
-		</ul>
 
 		<p>Magnets</p>
 
@@ -126,6 +120,8 @@
 			//
 			$("input").val(magnet)
 
+			load();
+
 		});
 
 		//
@@ -154,6 +150,25 @@
 		//	Load the content of the Magnet Hash
 		//
 		$('#load').click(function() {
+
+			console.log("Click")
+			load();
+
+		});
+
+		//
+		//	Stop downloading.
+		//
+		$('#stop').click(function() {
+
+			$('video').attr('src', '');
+			$('video')[0].load();
+
+		});
+
+		function load()
+		{
+			$('#load').prop('disabled', true);
 
 			//
 			//	Get Magnet hash from the input field
@@ -189,19 +204,11 @@
 					$("#content").append('<li class="file" data-name="' + obj.name + '">'+ obj.name + ' (' + formatBytes(obj.length, 0) + ') </li>');
 				})
 
+				$('#load').prop('disabled', false);
+
 			});
 
-		});
-
-		//
-		//	Stop downloading.
-		//
-		$('#stop').click(function() {
-
-			$('video').attr('src', '');
-			$('video')[0].load();
-
-		});
+		}
 
 		//
 		// Get a list Magnets in our client
