@@ -13,12 +13,14 @@ let db = {
 	ratio: 0
 }
 
+let error_message = "";
+
 //
 //	Listen for any potential client error
 //
 client.on('error', function(err) {
 
-	console.log(err)
+	error_message = err.message;
 
 });
 
@@ -218,6 +220,13 @@ router.get('/stats', function(req, res, next) {
 
 	res.status(200);
 	res.json(db);
+
+});
+
+router.get('/errors', function(req, res, next) {
+
+	res.status(200);
+	res.json(error_message);
 
 });
 

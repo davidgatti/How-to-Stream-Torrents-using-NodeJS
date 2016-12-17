@@ -54,6 +54,12 @@
 			<li>ratio: 0 Byte</li>
 		</ul>
 
+		<p>Client Errors</p>
+
+		<ul id="errors">
+			<li>N/A</li>
+		</ul>
+
 	</body>
 
 	<script>
@@ -74,6 +80,11 @@
 		//	Start the Stats loop
 		//
 		stats();
+
+		//
+		//	Start the client error check
+		//
+		check_for_errors();
 
 		//
 		//	Listen to Errors from the video tag
@@ -342,6 +353,46 @@
 				//	Restart the timer
 				//
 				stats();
+
+			}, 1000);
+		}
+
+		//
+		//	Query the server for the stats of the downloaded content
+		//
+		function check_for_errors()
+		{
+			//
+			//	Set a timeout that will be executed after N amount of time
+			//
+			setTimeout(function() {
+
+				//
+				//	Make a request to the server for the data
+				//
+				$.get(api + '/errors', function(message) {
+
+					//
+					//	Display the error only if there are any to be displayed
+					//
+					if(message)
+					{
+
+						//
+						//	Clear the content of the UL
+						//
+						$("#errors").empty();
+
+						$("#errors").append('<li class="error">' + message + '</li>');
+
+					}
+
+					//
+					//	Restart the timer
+					//
+					check_for_errors();
+
+				});
 
 			}, 1000);
 		}
