@@ -6,7 +6,7 @@
 		<meta name="viewport" content="width=device-width, initial-scale=1">
 		<meta name="description" content="">
 
-		<title>Movie Time</title>
+		<title>🍿 Movie Time</title>
 
 		<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
 
@@ -21,6 +21,7 @@
 			<li class="magnet" data-id="6a9759bffd5c0af65319979fb7832189f4f3c35d">Demo real</li>
 			<li class="magnet" data-id="6fd85ac1a2193167810da8c60e92604aedd70fe5">Dept</li>
 			<li class="magnet" data-id="f76ad565160789101bf986ba582d29584d9fee67">Snowden trailer</li>
+			<li class="magnet" data-id="6a02592d2bbc069628cd5ed8a54f88ee06ac0ba5">Cosmos Laundromat: First Cycle</li>
 		</ul>
 
 		<p>Magnet Hash <input type="text" name="magnet" placeholder="Enter torrent URL."></p>
@@ -36,23 +37,66 @@
 			<li id="stop">Stop</li>
 		</ul>
 
+		<p>Magnets</p>
+
+		<ul id="magnets">
+			<li>N/A</li>
+		</ul>
+
+		<p>Stats</p>
+
+		<ul id="stats">
+			<li>Progress: 0%</li>
+			<li>timeRemaining: 0</li>
+			<li>downloadSpeed: 0 Byte/s</li>
+			<li>received: 0 Byte</li>
+		</ul>
+
 	</body>
 
 	<script>
+
 	$(function() {
 
-		var api = "{{base_url}}/video/";
+		//
+		//	Set the base URL
+		//
+		var api = "{{base_url}}/video";
 
 		//
+		//	Start the Client content file loop
 		//
+		magnet_list();
+
+		//
+		//	Start the Stats loop
+		//
+		stats();
+
+		//
+		//	Listen to Errors from the video tag
 		//
 		$("video").on("error", function() {
 
+			//
+			//	React only if the SRC was set. The video tag will execute an
+			//	error immediately after loading, because no SRC is set.
+			//
+			//	To avoid executing an API call, we react to the error only when
+			//	the SRC is set.
+			//
 			if($('video').attr('src'))
 			{
+				//
+				//	Get the Magnet Hash from the input tag
+				//
 				var magnet = $('input').val();
 
-				$.get(api + 'delete/' + magnet, function(data) {
+				//
+				//	If the format of the file is not supported by the video tag,
+				//	we stop downloading the content since it is of no use to us.
+				//
+				$.get(api + '/delete/' + magnet, function(data) {
 
 					$('input').val('');
 
@@ -62,46 +106,87 @@
 		});
 
 		//
-		//
+		//	React each time an element from the example magnet list is clicked
 		//
 		$('.magnet').click(function() {
 
+			//
+			//	Get the Magnet Hash from the LI element clicked
+			//
 			var magnet = $(this).attr("data-id");
 
+			//
+			//	Remove the place holder of the input tag. If we don't do this
+			//	the interface will look like poop
+			//
 			$("input").removeAttr('placeholder');
+
+			//
+			//	Set the Magnet Hash in the input tag.
+			//
 			$("input").val(magnet)
 
 		});
 
 		//
-		//
+		//	React each time a file name is clicked form the Content UL
 		//
 		$('#content').on('click', '.file', function() {
 
+			//
+			//	Get the Magnet Hash
+			//
 			var magnet = $('input').val();
+
+			//
+			//	Get the file name that was clicked
+			//
 			var file_name = $(this).attr("data-name");
 
-			$('video').attr('src', api + 'stream/' + magnet + "/" + file_name);
+			//
+			//	Set the proper SRC of the video player
+			//
+			$('video').attr('src', api + '/stream/' + magnet + "/" + file_name);
 
 		});
 
 		//
-		//
+		//	Load the content of the Magnet Hash
 		//
 		$('#load').click(function() {
 
+			//
+			//	Get Magnet hash from the input field
+			//
 			var magnet = $('input').val();
 
-			$.get(api + 'add/' + magnet, function(data) {
+			//
+			//	React only if there is a Magnet Has
+			//
+			if(!magnet)
+			{
+				return console.error("No Magnet hash")
+			}
 
-				console.log(data)
+			console.log(magnet);
 
+			//
+			//	Make a request to the back end to load the Magnet Hash
+			//
+			$.get(api + '/add/' + magnet, function(data) {
+
+				//
+				//	Clear the UL content before appending new data
+				//
 				$("#content").empty();
 
+				//
+				//	Loop over the server response and list all the file inside
+				//	the Magnet Hash.
+				//
 				$.each(data, function(index, obj) {
 
-					$("#content").append('<li class="file" data-name="' + obj.name + '">"' + obj.name + '" ("' + formatBytes(obj.length) + '") </li>');
-
+					$("#content").append('<li class="file" data-name="' + obj.name + '">'+ obj.name + ' (' + formatBytes(obj.length, 0) + ') </li>');
 				})
 
 			});
@@ -109,7 +194,7 @@
 		});
 
 		//
-		//
+		//	Stop downloading.
 		//
 		$('#stop').click(function() {
 
@@ -118,16 +203,122 @@
 
 		});
 
+		//
+		// Get a list Magnets in our client
+		//
+		function magnet_list()
+		{
+			//
+			//	Set a timeout that will be executed after N amount of time
+			//
+			setTimeout(function() {
+
+				//
+				//	Make a request to the server for the data
+				//
+				$.get(api + '/list', function(data) {
+
+					//
+					//	Clear the content of the UL
+					//
+					$("#magnets").empty();
+
+					//
+					//	We populate the UL only if we get some data from the
+					//	server
+					//
+					if(data.length > 0)
+					{
+						//
+						//	Loop over the array to list all the files
+						//
+						$.each(data, function(index, obj) {
+
+							$("#magnets").append('<li class="magnet" data-name="' + obj.hash + '">' + obj.hash + '</li>');
+
+						});
+					}
+					else
+					{
+						//
+						//	Display Not Available if no data is present
+						//
+						$("#magnets").append('<li>N/A</li>');
+					}
+
+					//
+					//	Restart the timer
+					//
+					magnet_list();
+
+				});
+
+			}, 1000)
+		}
+
+		//
+		//	Query the server for the stats of the downloaded content
+		//
+		function stats()
+		{
+			//
+			//	Set a timeout that will be executed after N amount of time
+			//
+			setTimeout(function() {
+
+				//
+				//	Make a request to the server for the data
+				//
+				$.get(api + '/stats', function(obj) {
+
+					//
+					//	Clear the content of the UL
+					//
+					$("#stats").empty();
+
+					//
+					//	Create the content of the UL
+					//
+					var li = "<li>Progress: " + obj.progress + "%</li>" +
+							 "<li>timeRemaining: " + obj.timeRemaining + "</li>" +
+							 "<li>downloadSpeed: " + formatBytes(obj.downloadSpeed, 0) + "/s</li>" +
+							 "<li>received: " + formatBytes(obj.received, 0) + "</li>";
+
+					//
+					//	Display the stats in the UL
+					//
+					$("#stats").append(li);
+
+				});
+
+				//
+				//	Restart the timer
+				//
+				stats();
+
+			}, 1000);
+		}
+
 	});
 
-	function formatBytes(bytes,decimals) {
-	   if(bytes == 0) return '0 Byte';
-	   var k = 1000; // or 1024 for binary
-	   var dm = decimals + 1 || 3;
-	   var sizes = ['Bytes', 'KB', 'MB', 'GB', 'TB', 'PB', 'EB', 'ZB', 'YB'];
-	   var i = Math.floor(Math.log(bytes) / Math.log(k));
-	   return parseFloat((bytes / Math.pow(k, i)).toFixed(dm)) + ' ' + sizes[i];
+	function formatBytes(bytes, decimals)
+	{
+		if(bytes == 0)
+		{
+			return '0 Byte';
+		}
+
+		var k = 1000; // or 1024 for binary
+
+		var dm = decimals + 1 || 3;
+
+		var sizes = ['Bytes', 'KB', 'MB', 'GB', 'TB', 'PB', 'EB', 'ZB', 'YB'];
+
+		var i = Math.floor(Math.log(bytes) / Math.log(k));
+
+		return parseFloat((bytes / Math.pow(k, i)).toFixed(dm)) + ' ' + sizes[i];
 	}
+
 	</script>
 
 </html>

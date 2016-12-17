@@ -5,14 +5,19 @@ let WebTorrent = require('webtorrent')
 
 let router = express.Router();
 
-let client;
+let client = new WebTorrent();
+
+let db = {
+	progress: 0,
+	timeRemaining: 0,
+	downloadSpeed: 0,
+	received: 0
+}
 
 //
 //	Add the torrent and start downloading it.
 //
 router.get('/add/:magnet', function(req, res) {
-
-	client = new WebTorrent();
 
 	let magnet = "magnet:?xt=urn:btih:" + req.params.magnet;
 
@@ -64,13 +69,12 @@ router.get('/add/:magnet', function(req, res) {
 		//
 		torrent.on('download', function(bytes) {
 
-			let percent 		= Math.round(torrent.progress * 100 * 100) / 100;
-			let date 			= new Date(torrent.timeRemaining);
-			let remaining 		= date.toLocaleTimeString()
-			let downloadSpeed 	= torrent.downloadSpeed / 1024;
-			let received 		= torrent.received / 1024
-
-			console.log("%d Peers \t %s % \t %s remaining \t %s \t bytes/sec \t %s \t bytes", torrent.numPeers, percent, remaining, downloadSpeed, received)
+			db = {
+				progress: Math.round(torrent.progress * 100 * 100) / 100,
+				timeRemaining: new Date(torrent.timeRemaining).toLocaleTimeString(),
+				downloadSpeed: torrent.downloadSpeed,
+				received: torrent.received
+			}
 
 		})
 
@@ -202,6 +206,30 @@ router.get('/stream/:magnet/:file_name', function(req, res, next) {
 		return next(err);
 
 	});
+
+});
+
+router.get('/list', function(req, res, next) {
+
+	let torrent = client.torrents.reduce(function(array, data) {
+
+		array.push({
+			hash: data.infoHash
+		});
+
+		return array;
+
+	}, []);
+
+	res.status(200);
+	res.json(torrent);
+
+});
+
+router.get('/stats', function(req, res, next) {
+
+	res.status(200);
+	res.json(db);
 
 });
 
