@@ -198,6 +198,10 @@
 		{
 			$('#load').prop('disabled', true);
 
+			$("#content").empty();
+
+			$("#content").append('<li>Loading...</li>');
+
 			//
 			//	Get Magnet hash from the input field
 			//
