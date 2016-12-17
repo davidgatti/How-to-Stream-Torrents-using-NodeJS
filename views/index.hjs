@@ -147,6 +147,25 @@
 		});
 
 		//
+		//	React each time a file name is clicked form the Content UL
+		//
+		$('#magnets').on('click', '.magnet', function() {
+
+			//
+			//	Get the file name that was clicked
+			//
+			var magnet_hash = $(this).attr("data-hash");
+
+			//
+			//	Set the proper SRC of the video player
+			//
+			$.get(api + "/delete/" + magnet_hash, function(data) {
+
+			});
+
+		});
+
+		//
 		//	Load the content of the Magnet Hash
 		//
 		$('#load').click(function() {
@@ -241,7 +260,7 @@
 						//
 						$.each(data, function(index, obj) {
 
-							$("#magnets").append('<li class="magnet" data-name="' + obj.hash + '">' + obj.hash + '</li>');
+							$("#magnets").append('<li class="magnet" data-hash="' + obj.hash + '">' + obj.hash + '</li>');
 
 						});
 					}

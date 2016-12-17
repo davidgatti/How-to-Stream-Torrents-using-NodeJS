@@ -44,26 +44,6 @@ router.get('/add/:magnet', function(req, res) {
 		});
 
 		//
-		//	Emitted whenever data is uploaded. Useful for reporting the current
-		//	torrent status.
-		//
-		torrent.on('upload', function() {
-
-			//
-			//	Detect when we have uploaded the torrent
-			//
-			if(torrent.length == torrent.downloaded)
-			{
-				//
-				//	Destroy the client, including all torrents and connections
-				//	to peers
-				//
-				torrent.destroy();
-			}
-
-		});
-
-		//
 		//	Emitted whenever data is downloaded. Useful for reporting the
 		//	current torrent status, for instance:
 		//
@@ -238,6 +218,9 @@ router.get('/stats', function(req, res, next) {
 //
 router.get('/delete/:magnet', function(req, res, next) {
 
+	//
+	//	Create the Magnet URL
+	//
 	let magnet = "magnet:?xt=urn:btih:" + req.params.magnet;
 
 	//
@@ -247,12 +230,8 @@ router.get('/delete/:magnet', function(req, res, next) {
 	//
 	client.remove(magnet, function() {
 
-		client.destroy(function() {
-
-			res.status(200);
-			res.end();
-
-		});
+		res.status(200);
+		res.end();
 
 	});
 
