@@ -9,10 +9,33 @@ let client = new WebTorrent();
 
 let db = {
 	progress: 0,
-	timeRemaining: 0,
 	downloadSpeed: 0,
-	received: 0
+	ratio: 0
 }
+
+//
+//	Listen for any potential client error
+//
+client.on('error', function(err) {
+
+	console.log(err)
+
+});
+
+
+//
+//	Emitted whenever data is downloaded. Useful for reporting the
+//	current torrent status of the client.
+//
+client.on('download', function(bytes) {
+
+	db = {
+		progress: Math.round(client.progress * 100 * 100) / 100,
+		downloadSpeed: client.downloadSpeed,
+		ratio: client.ratio
+	}
+
+});
 
 //
 //	Add the torrent and start downloading it.
@@ -42,21 +65,6 @@ router.get('/add/:magnet', function(req, res) {
 			});
 
 		});
-
-		//
-		//	Emitted whenever data is downloaded. Useful for reporting the
-		//	current torrent status, for instance:
-		//
-		torrent.on('download', function(bytes) {
-
-			db = {
-				progress: Math.round(torrent.progress * 100 * 100) / 100,
-				timeRemaining: new Date(torrent.timeRemaining).toLocaleTimeString(),
-				downloadSpeed: torrent.downloadSpeed,
-				received: torrent.received
-			}
-
-		})
 
 		//
 		//	->	Just say it is ok.

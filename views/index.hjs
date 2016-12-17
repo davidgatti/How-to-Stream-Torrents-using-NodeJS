@@ -46,13 +46,12 @@
 			<li>N/A</li>
 		</ul>
 
-		<p>Stats</p>
+		<p>Client Stats</p>
 
 		<ul id="stats">
 			<li>Progress: 0%</li>
-			<li>timeRemaining: 0</li>
 			<li>downloadSpeed: 0 Byte/s</li>
-			<li>received: 0 Byte</li>
+			<li>ratio: 0 Byte</li>
 		</ul>
 
 	</body>
@@ -196,10 +195,19 @@
 
 		function load()
 		{
+			//
+			//	Disable to loading button
+			//
 			$('#load').prop('disabled', true);
 
+			//
+			//	Clear the UL content before appending new data
+			//
 			$("#content").empty();
 
+			//
+			//	Let the user know what to expect
+			//
 			$("#content").append('<li>Loading...</li>');
 
 			//
@@ -214,8 +222,6 @@
 			{
 				return console.error("No Magnet hash")
 			}
-
-			console.log(magnet);
 
 			//
 			//	Make a request to the back end to load the Magnet Hash
@@ -236,6 +242,9 @@
 					$("#content").append('<li class="file url" data-name="' + obj.name + '">'+ obj.name + ' (' + formatBytes(obj.length, 0) + ') </li>');
 				})
 
+				//
+				//	Re-enable the loading button
+				//
 				$('#load').prop('disabled', false);
 
 			});
@@ -319,9 +328,8 @@
 					//	Create the content of the UL
 					//
 					var li = "<li>Progress: " + obj.progress + "%</li>" +
-							 "<li>timeRemaining: " + obj.timeRemaining + "</li>" +
 							 "<li>downloadSpeed: " + formatBytes(obj.downloadSpeed, 0) + "/s</li>" +
-							 "<li>received: " + formatBytes(obj.received, 0) + "</li>";
+							 "<li>ratio: " + obj.ratio + "</li>";
 
 					//
 					//	Display the stats in the UL
