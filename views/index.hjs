@@ -25,14 +25,15 @@
 
 		<video autoplay src="" height="360px" controls ></video>
 
-		<p>Small and example torrents</p>
+		<p>Samples Torrents</p>
 
 		<ul id="demo_magnets">
-			<li class="magnet url" data-hash="6a9759bffd5c0af65319979fb7832189f4f3c35d">Sintel (Blender Open Movie Project) https://durian.blender.org</li>
-			<li class="magnet url" data-hash="6fd85ac1a2193167810da8c60e92604aedd70fe5">Dept</li>
-			<li class="magnet url" data-hash="f76ad565160789101bf986ba582d29584d9fee67">Snowden trailer</li>
-			<li class="magnet url" data-hash="0edb493361daaf35a69571b4629202127431aaca">Music Clip INTERFERENCE</li>
-			<li class="magnet url" data-hash="57246af00ea044d9b7fcec53dd1918fe9e456a90">Caminandes 3</li>
+			<li><span class="magnet url">334f62943e694041a1eaa4bcd474956071240fdb</span> - <span>For The Love of Spock - Sneak Peak</span></li>
+			<li><span class="magnet url">f76ad565160789101bf986ba582d29584d9fee67</span> - <span>SNOWDEN - Official Trailer</span></li>
+			<li><span class="magnet url">6a9759bffd5c0af65319979fb7832189f4f3c35d</span> - <span>Sintel (Blender Open Movie Project) <a href="https://durian.blender.org" target="_blank">durian.blender.org</a></span></li>
+			<li><span class="magnet url">6fd85ac1a2193167810da8c60e92604aedd70fe5</span> - <span>Samuel Proffitt - Depth ft. Naadia (Official Video)</span></li>
+			<li><span class="magnet url">0edb493361daaf35a69571b4629202127431aaca</span> - <span>TRAD+ album experience: INTERFERENCE</span></li>
+			<li><span class="magnet url">ec35ea4269c1b5613a0799d7a5c124e8478405ee</span> - <span>NUTS! <a href="http://www.nutsthefilm.com/" target="_blank">www.nutsthefilm.com</a></span></li>
 		</ul>
 
 		<p>Magnet Hash <input type="text" name="magnet" placeholder="Enter torrent URL."> <button id="load">Load</button></p>
@@ -140,7 +141,21 @@
 		//
 		$('#demo_magnets').on('click', '.magnet', function() {
 
-			set_has_in_input($(this));
+			//
+			//	Get the Magnet Hash from the LI element clicked
+			//
+			var magnet = $(this).text();
+
+			//
+			//	Remove the place holder of the input tag. If we don't do this
+			//	the interface will look like poop
+			//
+			$("input").removeAttr('placeholder');
+
+			//
+			//	Set the Magnet Hash in the input tag.
+			//
+			$("input").val(magnet)
 
 			load();
 
@@ -195,25 +210,6 @@
 			});
 
 		});
-
-		function set_has_in_input(that)
-		{
-			//
-			//	Get the Magnet Hash from the LI element clicked
-			//
-			var magnet = that.attr("data-hash");
-
-			//
-			//	Remove the place holder of the input tag. If we don't do this
-			//	the interface will look like poop
-			//
-			$("input").removeAttr('placeholder');
-
-			//
-			//	Set the Magnet Hash in the input tag.
-			//
-			$("input").val(magnet)
-		}
 
 		//	 _    _          _
 		//	| |  | |        | |
