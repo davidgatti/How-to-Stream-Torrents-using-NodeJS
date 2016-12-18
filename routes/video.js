@@ -44,12 +44,51 @@ client.on('download', function(bytes) {
 //
 router.get('/add/:magnet', function(req, res) {
 
-	let magnet = "magnet:?xt=urn:btih:" + req.params.magnet;
+	let magnet = req.params.magnet;
 
 	//
 	//	Add torrent to the queue
 	//
 	client.add(magnet, function (torrent) {
+
+		//
+		//	Content of the Magnet URL
+		//
+		let files = [];
+
+		//
+		//	Extract all the files form the Magnet URL
+		//
+		torrent.files.forEach(function(data) {
+
+			files.push({
+				name: data.name,
+				length: data.length
+			});
+
+		});
+
+		//
+		//	->	Just say it is ok.
+		//
+		res.status(200)
+		res.json(files);
+
+	});
+
+});
+
+//
+//	Add the torrent and start downloading it.
+//
+router.get('/files/:magnet', function(req, res) {
+
+	let magnet = req.params.magnet;
+
+	//
+	//	Get torrent info from the client
+	//
+	client.get(magnet, function (torrent) {
 
 		//
 		//	Content of the Magnet URL

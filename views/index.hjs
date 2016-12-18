@@ -28,10 +28,11 @@
 		<p>Small and example torrents</p>
 
 		<ul id="demo_magnets">
-			<li class="magnet url" data-hash="6a9759bffd5c0af65319979fb7832189f4f3c35d">Demo real</li>
+			<li class="magnet url" data-hash="6a9759bffd5c0af65319979fb7832189f4f3c35d">Sintel (Blender Open Movie Project) https://durian.blender.org</li>
 			<li class="magnet url" data-hash="6fd85ac1a2193167810da8c60e92604aedd70fe5">Dept</li>
 			<li class="magnet url" data-hash="f76ad565160789101bf986ba582d29584d9fee67">Snowden trailer</li>
 			<li class="magnet url" data-hash="0edb493361daaf35a69571b4629202127431aaca">Music Clip INTERFERENCE</li>
+			<li class="magnet url" data-hash="57246af00ea044d9b7fcec53dd1918fe9e456a90">Caminandes 3</li>
 		</ul>
 
 		<p>Magnet Hash <input type="text" name="magnet" placeholder="Enter torrent URL."> <button id="load">Load</button></p>
@@ -137,7 +138,7 @@
 		//
 		//	React each time an element from the example magnet list is clicked
 		//
-		$('#demo_magnets').on('click'. '.magnet', function() {
+		$('#demo_magnets').on('click', '.magnet', function() {
 
 			set_has_in_input($(this));
 
@@ -150,7 +151,6 @@
 		//
 		$('#load').click(function() {
 
-			console.log("Click")
 			load();
 
 		});
@@ -174,17 +174,6 @@
 			//	Set the proper SRC of the video player
 			//
 			$('video').attr('src', api + '/stream/' + magnet + "/" + file_name);
-
-		});
-
-		//
-		//	React each time a file name is clicked form the Content UL
-		//
-		$('#magnets').on('click', '.magnet', function() {
-
-			set_has_in_input($(this).parent());
-
-			load();
 
 		});
 
@@ -324,7 +313,7 @@
 						//
 						$.each(data, function(index, obj) {
 
-							$("#magnets").append('<li data-hash="' + obj.hash + '"><span class="magnet url">' + obj.hash + '</span> [<span class="delete url">Delete</span>]</li>');
+							$("#magnets").append('<li data-hash="' + obj.hash + '"><span class="magnet">' + obj.hash + '</span> [<span class="delete url">Delete</span>]</li>');
 
 						});
 					}
