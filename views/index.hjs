@@ -283,12 +283,14 @@
 					$("#magnets").empty();
 
 					//
-					//	2.	We populate the UL only if we get data from the server
+					//	2.	We populate the UL only if we get data from the
+					//		server
 					//
 					if(data.length > 0)
 					{
 						//
-						//	1.	Loop over the array to list all the Magnet Hashes.
+						//	1.	Loop over the array to list all the Magnet
+						//		Hashes.
 						//
 						$.each(data, function(index, obj) {
 
