@@ -35,6 +35,8 @@ The back is similar, and if you read first the [How to Stream Movies using NodeJ
 <a href="https://heroku.com/deploy?template=https://github.com/davidgatti/How-to-Stream-Torrents-using-NodeJS" target="_blank">
 <img align="left" style="float: left; margin: 0 10px 0 0;" src="https://www.herokucdn.com/deploy/button.svg"></a>
 
+Follow the instructions on the Heroku main app page, and then once the app is deployed, visti the main page. Once you do that you should see the site with some example free Magnet Hashes so you can test out the live streaming.
+
 # Other Projects
 
 If this article/project is something you enjoy, please consider giving it a 🌟. Also check out my [GitHub account](https://github.com/davidgatti), where I have other articles and apps that you might find interesting.
