@@ -39,31 +39,6 @@ if(cluster.isMaster) {
     //
     let cpuCount = 1 //require('os').cpus().length;
 
-	//
-	// 	2.	When on the production server
-	//
-	if(process.env.NODE_ENV === 'production') {
-
-		//
-		//	1.	Get the amount of memory on Heroku. This variable is set
-		//		by Heroku based on the type of account that you have.
-		//
-		let memory = (process.env.MEMORY_AVAILABLE * 1e6);
-
-		//
-		//	2. Get used memory on the system
-		//
-		let memory_used = (process.memoryUsage().rss * 2);
-
-		//
-		//	3.	calculate how many workers can we start to use ale the
-		//		available power of the server.
-		//
-		//		-1 for good measure
-		//
-		cpuCount = (memory / memory_used).toFixed() - 1;
-	}
-
     //
     //	3.	Create a worker for each CPU core.
     //
