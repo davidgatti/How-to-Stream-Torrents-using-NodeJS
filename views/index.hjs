@@ -27,20 +27,20 @@
 
 		<p>Small and example torrents</p>
 
-		<ul>
-			<li class="magnet url" data-id="6a9759bffd5c0af65319979fb7832189f4f3c35d">Demo real</li>
-			<li class="magnet url" data-id="6fd85ac1a2193167810da8c60e92604aedd70fe5">Dept</li>
-			<li class="magnet url" data-id="f76ad565160789101bf986ba582d29584d9fee67">Snowden trailer</li>
-			<li class="magnet url" data-id="6a02592d2bbc069628cd5ed8a54f88ee06ac0ba5">Cosmos Laundromat: First Cycle</li>
+		<ul id="demo_magnets">
+			<li class="magnet url" data-hash="6a9759bffd5c0af65319979fb7832189f4f3c35d">Demo real</li>
+			<li class="magnet url" data-hash="6fd85ac1a2193167810da8c60e92604aedd70fe5">Dept</li>
+			<li class="magnet url" data-hash="f76ad565160789101bf986ba582d29584d9fee67">Snowden trailer</li>
+			<li class="magnet url" data-hash="0edb493361daaf35a69571b4629202127431aaca">Music Clip INTERFERENCE</li>
 		</ul>
 
 		<p>Magnet Hash <input type="text" name="magnet" placeholder="Enter torrent URL."> <button id="load">Load</button></p>
 
-		<p>Content</p>
+		<p>Magnet Contents</p>
 
 		<ul id="content"></ul>
 
-		<p>Magnets</p>
+		<p>Client Magnets</p>
 
 		<ul id="magnets">
 			<li>N/A</li>
@@ -51,7 +51,7 @@
 		<ul id="stats">
 			<li>Progress: 0%</li>
 			<li>downloadSpeed: 0 Byte/s</li>
-			<li>ratio: 0 Byte</li>
+			<li>ratio: 0</li>
 		</ul>
 
 		<p>Client Errors</p>
@@ -86,6 +86,14 @@
 		//
 		check_for_errors();
 
+		//  _        _         _
+		// | |      (_)       | |
+		// | |       _   ___  | |_   _ __     ___   _ __   ___
+		// | |      | | / __| | __| | '_ \   / _ \ | '__| / __|
+		// | |____  | | \__ \ | |_  | | | | |  __/ | |    \__ \
+		// |______| |_| |___/  \__| |_| |_|  \___| |_|    |___/
+		//
+
 		//
 		//	Listen to Errors from the video tag
 		//
@@ -118,27 +126,31 @@
 
 		});
 
+		//	                  _____   _   _          _
+		//	                 / ____| | | (_)        | |
+		//	  ___    _ __   | |      | |  _    ___  | | __
+		//	 / _ \  | '_ \  | |      | | | |  / __| | |/ /
+		//	| (_) | | | | | | |____  | | | | | (__  |   <
+		//	 \___/  |_| |_|  \_____| |_| |_|  \___| |_|\_\
+		//
+
 		//
 		//	React each time an element from the example magnet list is clicked
 		//
-		$('.magnet').click(function() {
+		$('#demo_magnets').on('click'. '.magnet', function() {
 
-			//
-			//	Get the Magnet Hash from the LI element clicked
-			//
-			var magnet = $(this).attr("data-id");
+			set_has_in_input($(this));
 
-			//
-			//	Remove the place holder of the input tag. If we don't do this
-			//	the interface will look like poop
-			//
-			$("input").removeAttr('placeholder');
+			load();
 
-			//
-			//	Set the Magnet Hash in the input tag.
-			//
-			$("input").val(magnet)
+		});
 
+		//
+		//	Load the content of the Magnet Hash
+		//
+		$('#load').click(function() {
+
+			console.log("Click")
 			load();
 
 		});
@@ -170,10 +182,21 @@
 		//
 		$('#magnets').on('click', '.magnet', function() {
 
+			set_has_in_input($(this).parent());
+
+			load();
+
+		});
+
+		//
+		//	React each time a file name is clicked form the Content UL
+		//
+		$('#magnets').on('click', '.delete', function() {
+
 			//
 			//	Get the file name that was clicked
 			//
-			var magnet_hash = $(this).attr("data-hash");
+			var magnet_hash = $(this).parent().attr("data-hash");
 
 			//
 			//	Set the proper SRC of the video player
@@ -184,25 +207,33 @@
 
 		});
 
-		//
-		//	Load the content of the Magnet Hash
-		//
-		$('#load').click(function() {
+		function set_has_in_input(that)
+		{
+			//
+			//	Get the Magnet Hash from the LI element clicked
+			//
+			var magnet = that.attr("data-hash");
 
-			console.log("Click")
-			load();
+			//
+			//	Remove the place holder of the input tag. If we don't do this
+			//	the interface will look like poop
+			//
+			$("input").removeAttr('placeholder');
 
-		});
+			//
+			//	Set the Magnet Hash in the input tag.
+			//
+			$("input").val(magnet)
+		}
 
-		//
-		//	Stop downloading.
-		//
-		$('#stop').click(function() {
-
-			$('video').attr('src', '');
-			$('video')[0].load();
-
-		});
+		//	 _    _          _
+		//	| |  | |        | |
+		//	| |__| |   ___  | |  _ __     ___   _ __   ___
+		//	|  __  |  / _ \ | | | '_ \   / _ \ | '__| / __|
+		//	| |  | | |  __/ | | | |_) | |  __/ | |    \__ \
+		//	|_|  |_|  \___| |_| | .__/   \___| |_|    |___/
+		//	                    | |
+		//	                    |_|
 
 		function load()
 		{
@@ -293,7 +324,7 @@
 						//
 						$.each(data, function(index, obj) {
 
-							$("#magnets").append('<li class="magnet url" data-hash="' + obj.hash + '">' + obj.hash + '</li>');
+							$("#magnets").append('<li data-hash="' + obj.hash + '"><span class="magnet url">' + obj.hash + '</span> [<span class="delete url">Delete</span>]</li>');
 
 						});
 					}
@@ -399,6 +430,9 @@
 
 	});
 
+	//
+	//	Convert bytes to a human readable form
+	//
 	function formatBytes(bytes, decimals)
 	{
 		if(bytes == 0)
