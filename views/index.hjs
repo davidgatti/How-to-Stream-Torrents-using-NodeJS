@@ -12,6 +12,10 @@
 
 		<style type="text/css">
 
+			body {
+				font-family: monospace;
+			}
+
 			.url:hover {
     			text-decoration: underline;
     			cursor: pointer;
@@ -25,7 +29,7 @@
 
 		<video autoplay src="" height="360px" controls ></video>
 
-		<p>Samples Torrents</p>
+		<p>Samples Torrents:</p>
 
 		<ul id="demo_magnets">
 			<li><span class="magnet url">334f62943e694041a1eaa4bcd474956071240fdb</span> - <span>For The Love of Spock - Sneak Peak</span></li>
@@ -38,17 +42,17 @@
 
 		<p>Magnet Hash <input type="text" name="magnet" placeholder="Enter torrent URL."> <button id="load">Load</button></p>
 
-		<p>Magnet Contents</p>
+		<p>Magnet Contents:</p>
 
 		<ul id="content"></ul>
 
-		<p>Client Magnets</p>
+		<p>Client Magnets:</p>
 
 		<ul id="magnets">
 			<li>N/A</li>
 		</ul>
 
-		<p>Client Stats</p>
+		<p>Client Stats:</p>
 
 		<ul id="stats">
 			<li>Progress: 0%</li>
@@ -56,7 +60,7 @@
 			<li>ratio: 0</li>
 		</ul>
 
-		<p>Client Errors</p>
+		<p>Client Errors:</p>
 
 		<ul id="errors">
 			<li>N/A</li>
@@ -74,59 +78,19 @@
 		var api = "{{base_url}}/video";
 
 		//
-		//	Start the Client content file loop
+		//	Check every second if there is a new Magnet file in the client
 		//
-		magnet_list();
-
-		//
-		//	Start the Stats loop
-		//
-		stats();
+		client_magnet_list();
 
 		//
-		//	Start the client error check
+		//	Get every second the stats of the client, not individual torrent.
 		//
-		check_for_errors();
-
-		//  _        _         _
-		// | |      (_)       | |
-		// | |       _   ___  | |_   _ __     ___   _ __   ___
-		// | |      | | / __| | __| | '_ \   / _ \ | '__| / __|
-		// | |____  | | \__ \ | |_  | | | | |  __/ | |    \__ \
-		// |______| |_| |___/  \__| |_| |_|  \___| |_|    |___/
-		//
+		check_for_client_stats();
 
 		//
-		//	Listen to Errors from the video tag
+		//	Check every second of there is some errors from the client
 		//
-		$("video").on("error", function() {
-
-			//
-			//	React only if the SRC was set. The video tag will execute an
-			//	error immediately after loading, because no SRC is set.
-			//
-			//	To avoid executing an API call, we react to the error only when
-			//	the SRC is set.
-			//
-			if($('video').attr('src'))
-			{
-				//
-				//	Get the Magnet Hash from the input tag
-				//
-				var magnet = $('input').val();
-
-				//
-				//	If the format of the file is not supported by the video tag,
-				//	we stop downloading the content since it is of no use to us.
-				//
-				$.get(api + '/delete/' + magnet, function(data) {
-
-					$('input').val('');
-
-				});
-			}
-
-		});
+		check_for_client_errors();
 
 		//	                  _____   _   _          _
 		//	                 / ____| | | (_)        | |
@@ -137,18 +101,18 @@
 		//
 
 		//
-		//	React each time an element from the example magnet list is clicked
+		//	React each time an element from the example magnet list is clicked.
 		//
 		$('#demo_magnets').on('click', '.magnet', function() {
 
 			//
-			//	Get the Magnet Hash from the LI element clicked
+			//	Get the Magnet Hash from the LI element that was clicked.
 			//
 			var magnet = $(this).text();
 
 			//
 			//	Remove the place holder of the input tag. If we don't do this
-			//	the interface will look like poop
+			//	the interface will look like poop.
 			//
 			$("input").removeAttr('placeholder');
 
@@ -157,6 +121,10 @@
 			//
 			$("input").val(magnet)
 
+			//
+			//	Once we select a Magnet Hash we immediately load the content of
+			//	the magnet so we can select which file do we want to play.
+			//
 			load();
 
 		});
@@ -166,12 +134,15 @@
 		//
 		$('#load').click(function() {
 
+			//
+			//	Load the content
+			//
 			load();
 
 		});
 
 		//
-		//	React each time a file name is clicked form the Content UL
+		//	React each time a file name is clicked from the Magnet Contents UL
 		//
 		$('#content').on('click', '.file', function() {
 
@@ -193,17 +164,20 @@
 		});
 
 		//
-		//	React each time a file name is clicked form the Content UL
+		//	React to a delete action so we can remove Magnets from the client.
+		//	Not that we need this in such basic example, but I did it because
+		//	why not :).
 		//
 		$('#magnets').on('click', '.delete', function() {
 
 			//
-			//	Get the file name that was clicked
+			//	Get the Magnet hash.
 			//
 			var magnet_hash = $(this).parent().attr("data-hash");
 
 			//
-			//	Set the proper SRC of the video player
+			//	Make the right call to the API to remove the Magnet from
+			//	the client.
 			//
 			$.get(api + "/delete/" + magnet_hash, function(data) {
 
@@ -220,6 +194,10 @@
 		//	                    | |
 		//	                    |_|
 
+		//
+		//	Load the content of a Magnet so we can see what files are inside
+		//	a Magnet.
+		//
 		function load()
 		{
 			//
@@ -228,7 +206,7 @@
 			$('#load').prop('disabled', true);
 
 			//
-			//	Clear the UL content before appending new data
+			//	Clear the UL Magnet Contents before appending new data
 			//
 			$("#content").empty();
 
@@ -247,16 +225,16 @@
 			//
 			if(!magnet)
 			{
-				return console.error("No Magnet hash")
+				return console.error("No Magnet Hash");
 			}
 
 			//
-			//	Make a request to the back end to load the Magnet Hash
+			//	Make a request to the API to load the contents of a Magnet Hash
 			//
 			$.get(api + '/add/' + magnet, function(data) {
 
 				//
-				//	Clear the UL content before appending new data
+				//	Remove the loading message.
 				//
 				$("#content").empty();
 
@@ -270,7 +248,8 @@
 				})
 
 				//
-				//	Re-enable the loading button
+				//	Re-enable the loading button so the user can maybe past
+				//	their own Magnet Hash.
 				//
 				$('#load').prop('disabled', false);
 
@@ -279,17 +258,19 @@
 		}
 
 		//
-		// Get a list Magnets in our client
+		// 	Get a list of Magnet Hashes that a client has. This method will be
+		// 	executed in a loop every n amount of time to make sure the data
+		// 	is nice and fresh.
 		//
-		function magnet_list()
+		function client_magnet_list()
 		{
 			//
-			//	Set a timeout that will be executed after N amount of time
+			//	Set a timeout that will be executed after n amount of time
 			//
 			setTimeout(function() {
 
 				//
-				//	Make a request to the server for the data
+				//	Make a API request to get the contents of the Client
 				//
 				$.get(api + '/list', function(data) {
 
@@ -299,13 +280,12 @@
 					$("#magnets").empty();
 
 					//
-					//	We populate the UL only if we get some data from the
-					//	server
+					//	We populate the UL only if we get data from the server
 					//
 					if(data.length > 0)
 					{
 						//
-						//	Loop over the array to list all the files
+						//	Loop over the array to list all the Magnet Hashes.
 						//
 						$.each(data, function(index, obj) {
 
@@ -322,9 +302,10 @@
 					}
 
 					//
-					//	Restart the timer
+					//	Restart the timer so we keep on checking if there are
+					//	new Magnet Hashes
 					//
-					magnet_list();
+					client_magnet_list();
 
 				});
 
@@ -332,27 +313,30 @@
 		}
 
 		//
-		//	Query the server for the stats of the downloaded content
+		//	Make API request every n amount of time to get the status of the
+		//	client so we can get a sense if the data is being downloaded or
+		//	not.
 		//
-		function stats()
+		function check_for_client_stats()
 		{
 			//
-			//	Set a timeout that will be executed after N amount of time
+			//	Set a timeout that will be executed after n amount of time
 			//
 			setTimeout(function() {
 
 				//
-				//	Make a request to the server for the data
+				//	Make a request to the API for fresh data.
 				//
 				$.get(api + '/stats', function(obj) {
 
 					//
-					//	Clear the content of the UL
+					//	Clear the content of the UL so we can refresh it with
+					//	new content.
 					//
 					$("#stats").empty();
 
 					//
-					//	Create the content of the UL
+					//	Format the response in a meaningful way
 					//
 					var li = "<li>Progress: " + obj.progress + "%</li>" +
 							 "<li>downloadSpeed: " + formatBytes(obj.downloadSpeed, 0) + "/s</li>" +
@@ -366,17 +350,19 @@
 				});
 
 				//
-				//	Restart the timer
+				//	Restart the timer so we keep on checking the status of
+				//	the client.
 				//
-				stats();
+				check_for_client_stats();
 
 			}, 1000);
 		}
 
 		//
-		//	Query the server for the stats of the downloaded content
+		//	Make API request every n amount of time to see if the client has
+		//	some errors worth showing.
 		//
-		function check_for_errors()
+		function check_for_client_errors()
 		{
 			//
 			//	Set a timeout that will be executed after N amount of time
@@ -389,24 +375,27 @@
 				$.get(api + '/errors', function(message) {
 
 					//
-					//	Display the error only if there are any to be displayed
+					//	Display the error only if there is anything to show
 					//
 					if(message)
 					{
-
 						//
 						//	Clear the content of the UL
 						//
 						$("#errors").empty();
 
+						//
+						//	Display the error
+						//
 						$("#errors").append('<li class="error">' + message + '</li>');
 
 					}
 
 					//
-					//	Restart the timer
+					//	Restart the timer so we can update the error message if
+					//	there is anything new
 					//
-					check_for_errors();
+					check_for_client_errors();
 
 				});
 
@@ -420,19 +409,37 @@
 	//
 	function formatBytes(bytes, decimals)
 	{
+		//
+		//	If the size is 0, then we can stop right away.
+		//
 		if(bytes == 0)
 		{
 			return '0 Byte';
 		}
 
-		var k = 1000; // or 1024 for binary
+		//
+		//	Convert bytes to kilobytes
+		//
+		var k = 1024;
 
+		//
+		//	Set how many position after decimal to show
+		//
 		var dm = decimals + 1 || 3;
 
+		//
+		//	Array with all the possible formats.
+		//
 		var sizes = ['Bytes', 'KB', 'MB', 'GB', 'TB', 'PB', 'EB', 'ZB', 'YB'];
 
+		//
+		//
+		//
 		var i = Math.floor(Math.log(bytes) / Math.log(k));
 
+		//
+		//
+		//
 		return parseFloat((bytes / Math.pow(k, i)).toFixed(dm)) + ' ' + sizes[i];
 	}
 
