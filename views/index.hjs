@@ -73,22 +73,23 @@
 	$(function() {
 
 		//
-		//	Set the base URL
+		//	1.	Set the base URL
 		//
 		var api = "{{base_url}}/video";
 
 		//
-		//	Check every second if there is a new Magnet file in the client
+		//	2.	Check every second if there is a new Magnet file in the client
 		//
 		client_magnet_list();
 
 		//
-		//	Get every second the stats of the client, not individual torrent.
+		//	3.	Get every second the stats of the client, not individual
+		//		torrent.
 		//
 		check_for_client_stats();
 
 		//
-		//	Check every second of there is some errors from the client
+		//	4.	Check every second of there is some errors from the client
 		//
 		check_for_client_errors();
 
@@ -106,24 +107,25 @@
 		$('#demo_magnets').on('click', '.magnet', function() {
 
 			//
-			//	Get the Magnet Hash from the LI element that was clicked.
+			//	1.	Get the Magnet Hash from the LI element that was clicked.
 			//
 			var magnet = $(this).text();
 
 			//
-			//	Remove the place holder of the input tag. If we don't do this
-			//	the interface will look like poop.
+			//	2.	Remove the place holder of the input tag. If we don't do
+			//		this the interface will look like poop.
 			//
 			$("input").removeAttr('placeholder');
 
 			//
-			//	Set the Magnet Hash in the input tag.
+			//	3.	Set the Magnet Hash in the input tag.
 			//
 			$("input").val(magnet)
 
 			//
-			//	Once we select a Magnet Hash we immediately load the content of
-			//	the magnet so we can select which file do we want to play.
+			//	4.	Once we select a Magnet Hash we immediately load the
+			//		content of the magnet so we can select which file do we
+			//		want to play.
 			//
 			load();
 
@@ -135,7 +137,7 @@
 		$('#load').click(function() {
 
 			//
-			//	Load the content
+			//	1.	Load the content
 			//
 			load();
 
@@ -147,17 +149,17 @@
 		$('#content').on('click', '.file', function() {
 
 			//
-			//	Get the Magnet Hash
+			//	1.	Get the Magnet Hash
 			//
 			var magnet = $('input').val();
 
 			//
-			//	Get the file name that was clicked
+			//	2.	Get the file name that was clicked
 			//
 			var file_name = $(this).attr("data-name");
 
 			//
-			//	Set the proper SRC of the video player
+			//	3.	Set the proper SRC of the video player
 			//
 			$('video').attr('src', api + '/stream/' + magnet + "/" + file_name);
 
@@ -171,13 +173,13 @@
 		$('#magnets').on('click', '.delete', function() {
 
 			//
-			//	Get the Magnet hash.
+			//	1.	Get the Magnet hash.
 			//
 			var magnet_hash = $(this).parent().attr("data-hash");
 
 			//
-			//	Make the right call to the API to remove the Magnet from
-			//	the client.
+			//	2.	Make the right call to the API to remove the Magnet from
+			//		the client.
 			//
 			$.get(api + "/delete/" + magnet_hash, function(data) {
 
@@ -201,27 +203,27 @@
 		function load()
 		{
 			//
-			//	Disable to loading button
+			//	1.	Disable to loading button
 			//
 			$('#load').prop('disabled', true);
 
 			//
-			//	Clear the UL Magnet Contents before appending new data
+			//	2.	Clear the UL Magnet Contents before appending new data
 			//
 			$("#content").empty();
 
 			//
-			//	Let the user know what to expect
+			//	3.	Let the user know what to expect
 			//
 			$("#content").append('<li>Loading...</li>');
 
 			//
-			//	Get Magnet hash from the input field
+			//	4.	Get Magnet hash from the input field
 			//
 			var magnet = $('input').val();
 
 			//
-			//	React only if there is a Magnet Has
+			//	5.	React only if there is a Magnet Has
 			//
 			if(!magnet)
 			{
@@ -229,27 +231,28 @@
 			}
 
 			//
-			//	Make a request to the API to load the contents of a Magnet Hash
+			//	6.	Make a request to the API to load the contents of a Magnet
+			//		Hash
 			//
 			$.get(api + '/add/' + magnet, function(data) {
 
 				//
-				//	Remove the loading message.
+				//	1.	Remove the loading message.
 				//
 				$("#content").empty();
 
 				//
-				//	Loop over the server response and list all the file inside
-				//	the Magnet Hash.
+				//	2.	Loop over the server response and list all the file
+				//		inside the Magnet Hash.
 				//
 				$.each(data, function(index, obj) {
 
-					$("#content").append('<li class="file url" data-name="' + obj.name + '">'+ obj.name + ' (' + formatBytes(obj.length, 0) + ') </li>');
+					$("#content").append('<li class="file url" data-name="' + obj.name + '">'+ obj.name + ' (' + format_bytes(obj.length, 0) + ') </li>');
 				})
 
 				//
-				//	Re-enable the loading button so the user can maybe past
-				//	their own Magnet Hash.
+				//	3.	Re-enable the loading button so the user can maybe past
+				//		their own Magnet Hash.
 				//
 				$('#load').prop('disabled', false);
 
@@ -265,27 +268,27 @@
 		function client_magnet_list()
 		{
 			//
-			//	Set a timeout that will be executed after n amount of time
+			//	1.	Set a timeout that will be executed after n amount of time
 			//
 			setTimeout(function() {
 
 				//
-				//	Make a API request to get the contents of the Client
+				//	1.	Make a API request to get the contents of the Client
 				//
 				$.get(api + '/list', function(data) {
 
 					//
-					//	Clear the content of the UL
+					//	1.	Clear the content of the UL
 					//
 					$("#magnets").empty();
 
 					//
-					//	We populate the UL only if we get data from the server
+					//	2.	We populate the UL only if we get data from the server
 					//
 					if(data.length > 0)
 					{
 						//
-						//	Loop over the array to list all the Magnet Hashes.
+						//	1.	Loop over the array to list all the Magnet Hashes.
 						//
 						$.each(data, function(index, obj) {
 
@@ -296,14 +299,14 @@
 					else
 					{
 						//
-						//	Display Not Available if no data is present
+						//	1.	Display Not Available if no data is present
 						//
 						$("#magnets").append('<li>N/A</li>');
 					}
 
 					//
-					//	Restart the timer so we keep on checking if there are
-					//	new Magnet Hashes
+					//	3.	Restart the timer so we keep on checking if there
+					//		are new Magnet Hashes
 					//
 					client_magnet_list();
 
@@ -320,38 +323,38 @@
 		function check_for_client_stats()
 		{
 			//
-			//	Set a timeout that will be executed after n amount of time
+			//	1.	Set a timeout that will be executed after n amount of time
 			//
 			setTimeout(function() {
 
 				//
-				//	Make a request to the API for fresh data.
+				//	1.	Make a request to the API for fresh data.
 				//
 				$.get(api + '/stats', function(obj) {
 
 					//
-					//	Clear the content of the UL so we can refresh it with
-					//	new content.
+					//	1.	Clear the content of the UL so we can refresh it
+					//		with new content.
 					//
 					$("#stats").empty();
 
 					//
-					//	Format the response in a meaningful way
+					//	2.	Format the response in a meaningful way
 					//
 					var li = "<li>Progress: " + obj.progress + "%</li>" +
-							 "<li>downloadSpeed: " + formatBytes(obj.downloadSpeed, 0) + "/s</li>" +
+							 "<li>downloadSpeed: " + format_bytes(obj.downloadSpeed, 0) + "/s</li>" +
 							 "<li>ratio: " + obj.ratio + "</li>";
 
 					//
-					//	Display the stats in the UL
+					//	3.	Display the stats in the UL
 					//
 					$("#stats").append(li);
 
 				});
 
 				//
-				//	Restart the timer so we keep on checking the status of
-				//	the client.
+				//	2.	Restart the timer so we keep on checking the status of
+				//		the client.
 				//
 				check_for_client_stats();
 
@@ -365,35 +368,35 @@
 		function check_for_client_errors()
 		{
 			//
-			//	Set a timeout that will be executed after N amount of time
+			//	1.	Set a timeout that will be executed after N amount of time
 			//
 			setTimeout(function() {
 
 				//
-				//	Make a request to the server for the data
+				//	1.	Make a request to the server for the data
 				//
 				$.get(api + '/errors', function(message) {
 
 					//
-					//	Display the error only if there is anything to show
+					//	1.	Display the error only if there is anything to show
 					//
 					if(message)
 					{
 						//
-						//	Clear the content of the UL
+						//	1.	Clear the content of the UL
 						//
 						$("#errors").empty();
 
 						//
-						//	Display the error
+						//	2.	Display the error
 						//
 						$("#errors").append('<li class="error">' + message + '</li>');
 
 					}
 
 					//
-					//	Restart the timer so we can update the error message if
-					//	there is anything new
+					//	2.	Restart the timer so we can update the error
+					//		message if there is anything new
 					//
 					check_for_client_errors();
 
@@ -407,7 +410,7 @@
 	//
 	//	Convert bytes to a human readable form
 	//
-	function formatBytes(bytes, decimals)
+	function format_bytes(bytes, decimals)
 	{
 		//
 		//	If the size is 0, then we can stop right away.

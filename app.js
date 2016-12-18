@@ -1,16 +1,23 @@
 let path = require('path');
+let cors = require('cors');
 let logger = require('morgan');
 let express = require('express');
 let bodyParser = require('body-parser');
-let cors = require('cors');
 
 let app = express();
 
+//
+//  Set public paths
+//
 app.set('views', path.join(__dirname, 'views'));
+
+//
+//	Set the front end rendering engine
+//
 app.set('view engine', 'hjs');
 
 //
-//
+//	Add cors to make jQuery API requests
 //
 app.use(cors());
 
