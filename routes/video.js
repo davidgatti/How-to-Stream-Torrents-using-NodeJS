@@ -153,6 +153,8 @@ router.get('/stream/:magnet/:file_name', function(req, res, next) {
 	//
 	let range = req.headers.range;
 
+	console.log(range);
+
 	//
 	//	6.	Make sure the browser ask for a range to be sent.
 	//
