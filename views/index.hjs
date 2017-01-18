@@ -247,7 +247,7 @@
 				//
 				$.each(data, function(index, obj) {
 
-					$("#content").append('<li class="file url" data-name="' + obj.name + '">'+ obj.name + ' (' + format_bytes(obj.length, 0) + ') <a href="' + api + '/stream/' + magnet + "/" + obj.name + '">SRC</a></li>');
+					$("#content").append('<li class="file url" data-name="' + obj.name + '"><span class="url">'+ obj.name + '</span> (' + format_bytes(obj.length, 0) + ') <a href="' + api + '/stream/' + magnet + "/" + obj.name + '">SRC</a></li>');
 				})
 
 				//
