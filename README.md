@@ -42,6 +42,24 @@ The code is composed of two parts: We have the front-end and we have the back-en
 
 The back-end is similar. If you read the [How to Stream Movies using NodeJS](https://github.com/davidgatti/How-to-Stream-Movies-using-NodeJS) article first, you see only new code related to the [WebTorrent](https://webtorrent.io) module. Meaning that if you feel confused, you should check [How to Stream Movies using NodeJS](https://github.com/davidgatti/How-to-Stream-Movies-using-NodeJS) first to understand the basics of streaming videos with NodeJS.
 
-# Other Projects
+# Other
 
-If this article/project is something you enjoy, please consider giving it a 🌟. Also check out my [GitHub account](https://github.com/davidgatti), where I have other articles and apps that you might find interesting.
+If you've enjoyed this article/project, please consider giving it a 🌟. Also check out my [GitHub account] (https://github.com/davidgatti), where I have other articles and apps that you might find interesting.
+
+## Where to follow
+
+You can follow me on social media 🐙😇, at the following locations:
+
+- [GitHub](https://github.com/davidgatti)
+- [Twitter](https://twitter.com/dawidgatti)
+- [Instagram](https://www.instagram.com/gattidavid/)
+
+## More about me
+
+I don’t only live on GitHub, I try to do many things not to get bored 🙃. To learn more about me, you can visit the following links:
+
+- [Podcasts](http://david.gatti.pl/podcasts)
+- [Articles](http://david.gatti.pl/articles)
+- [Technical Articles](http://david.gatti.pl/technical_articles)
+- [Software Projects](http://david.gatti.pl/software_projects)
+- [Hardware Projects](http://david.gatti.pl/hardware_projects)
