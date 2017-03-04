@@ -42,7 +42,7 @@ The code is composed of two parts: We have the front-end and we have the back-en
 
 The back-end is similar. If you read the [How to Stream Movies using NodeJS](https://github.com/davidgatti/How-to-Stream-Movies-using-NodeJS) article first, you see only new code related to the [WebTorrent](https://webtorrent.io) module. Meaning that if you feel confused, you should check [How to Stream Movies using NodeJS](https://github.com/davidgatti/How-to-Stream-Movies-using-NodeJS) first to understand the basics of streaming videos with NodeJS.
 
-# Other
+# The End
 
 If you've enjoyed this article/project, please consider giving it a 🌟. Also check out my [GitHub account] (https://github.com/davidgatti), where I have other articles and apps that you might find interesting.
 
