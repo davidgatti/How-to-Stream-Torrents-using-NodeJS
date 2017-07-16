@@ -44,7 +44,13 @@ The back-end is similar. If you read the [How to Stream Movies using NodeJS](htt
 
 # The End
 
-If you've enjoyed this article/project, please consider giving it a 🌟. Also check out my [GitHub account](https://github.com/davidgatti), where I have other articles and apps that you might find interesting.
+If you've enjoyed this article/project, please consider giving it a 🌟 or donate.
+
+- [![Donate](https://img.shields.io/badge/Donate-PayPal-green.svg)](https://www.paypal.me/gattidavid/25)
+- [![Star on GitHub](https://img.shields.io/github/stars/davidgatti/How-to-Stream-Torrents-using-NodeJS.svg?style=social)](https://github.com/davidgatti/How-to-Stream-Movies-using-NodeJS/stargazers)
+- [![Watch on GitHub](https://img.shields.io/github/watchers/davidgatti/How-to-Stream-Torrents-using-NodeJS.svg?style=social)](https://github.com/davidgatti/How-to-Stream-Movies-using-NodeJS/watchers)
+
+Also check out my [GitHub account](https://github.com/davidgatti), where I have other articles and apps that you might find interesting.
 
 ## Where to follow
 
