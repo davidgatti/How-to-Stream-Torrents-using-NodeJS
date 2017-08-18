@@ -5,7 +5,8 @@
 	"success_url": "/",
 	"env": {
 		"NODE_ENV": {
-			"description": "The environment can be: production, staging or development"
+			"description": "The environment can be: production, staging, development or local (defaults to production)",
+			"value": "production"
 		},
 		"NPM_CONFIG_PRODUCTION": {
 			"description": "By default Heroku sets this to true, if you are deploying a dev version of the code, set this false.",
