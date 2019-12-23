@@ -13,7 +13,7 @@
     "cors": "^2.8.1",
     "express": "4.13.4",
     "hjs": "0.0.6",
-    "morgan": "1.7.0",
+    "morgan": "1.9.1",
     "webtorrent": "^0.107.16"
   },
   "devDependencies": {
