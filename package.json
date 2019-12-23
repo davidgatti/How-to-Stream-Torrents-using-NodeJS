@@ -14,7 +14,7 @@
     "express": "4.13.4",
     "hjs": "0.0.6",
     "morgan": "1.7.0",
-    "webtorrent": "^0.98.0"
+    "webtorrent": "^0.107.16"
   },
   "devDependencies": {
     "nodemon": "1.11.0",
